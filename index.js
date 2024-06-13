@@ -64,7 +64,7 @@ try {
   const result2 = multiply(3, null);
   console.log(result2);
 } catch (error) {
-  console.error(error.message);       //index.js:67 Invalid arguments
+  console.error(error.message);       // Invalid arguments
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ try {
   const result = safeFunction();
   console.log(result);                                 //Успіх!
 } catch (e) {
-  console.error("Усі спроби помилки:", e.message);     //index.js:109 Усі спроби помилки: Помилка!
+  console.error("Усі спроби помилки:", e.message);     // Усі спроби помилки: Помилка!
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
