@@ -4,26 +4,30 @@
  яка приймає на вхід функцію і додає можливість логувати всі аргументи, 
  передані у функцію-аргумент.*/
 ///////////////////////////////////////
-function work(a) {
-  return `Name arguments ${a}`;
+function sumArguments() { 
+let sum = 0;
+[...arguments].forEach((element) => {
+  sum += element;
+})
+return sum
 }
 function logArguments(fn) {
-  return function () {    
-    log.push([].slice.call(arguments));    
+  return function () {
+    log.push([].slice.call(arguments));
     return fn.apply(this, arguments);
   };
 }
 const log = [];
 
-work = logArguments(work);
+sumArguments = logArguments(sumArguments);
 
-console.log(work(1)); // Name arguments 1
-console.log(work(6)); // Name arguments 6
-console.log(work(7)); // Name arguments 7
+console.log(sumArguments(1, 2, 4, 10, 20, 5)); // 42
+console.log(sumArguments(6, 4)); // 10
+console.log(sumArguments(7, 5, 4)); // 16
 
-log.forEach((element) => {
+log.flat().forEach((element) => {
   console.log(`Лог:${element}`);
-}); // Лог:1   Лог:6   Лог:7
+}); // Лог:1   Лог:2   Лог:4   Лог:10   Лог:20    Лог:5    Лог:6    Лог:4    Лог:7   Лог:5    Лог:4
 ///////////////////////////////////////////////
 /*validate
 Вам необхідно написати функцію-декоратор validate(fn, validator),
@@ -33,10 +37,10 @@ log.forEach((element) => {
 //////////////////////////////////////////////
 const validate = function (fn, validator) {
   return function (...args) {
-      if (!validator(...args)) {
-          throw new Error("Invalid arguments");
-      }
-      return fn(...args);
+    if (!validator(...args)) {
+      throw new Error("Invalid arguments");
+    }
+    return fn(...args);
   };
 };
 
@@ -45,16 +49,15 @@ let multiply = function (a, b) {
 };
 
 const isIntegerValidator = function (...args) {
-  return args.every(arg => Number.isInteger(arg));
+  return args.every((arg) => Number.isInteger(arg));
 };
 
 multiply = validate(multiply, isIntegerValidator);
 
-
 // Successful completion
 try {
   const result1 = multiply(6, 8);
-  console.log(result1);               // 48
+  console.log(result1); // 48
 } catch (error) {
   console.error(error.message);
 }
@@ -64,7 +67,7 @@ try {
   const result2 = multiply(3, null);
   console.log(result2);
 } catch (error) {
-  console.error(error.message);       // Invalid arguments
+  console.error(error.message); // Invalid arguments
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -72,30 +75,30 @@ try {
 Вам необхідно написати функцію-декоратор retry(fn, maxAttempts),
  яка приймає на вхід функцію і додає можливість викликати функцію 
  з максимальною кількістю спроб у разі помилки та повертає результат останнього виклику.*/
- ///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
- function retry(fn, maxAttempts) {
-  return function(...args) {
-      let attempts = 0;
-      function attempt() {
-          try {
-              return fn(...args);
-          } catch (e) {
-              attempts++;
-              if (attempts < maxAttempts) {
-                  return attempt();
-              } else {
-                  throw e;
-              }
-          }
+function retry(fn, maxAttempts) {
+  return function (...args) {
+    let attempts = 0;
+    function attempt() {
+      try {
+        return fn(...args);
+      } catch (e) {
+        attempts++;
+        if (attempts < maxAttempts) {
+          return attempt();
+        } else {
+          throw e;
+        }
       }
-      return attempt();
-  }
+    }
+    return attempt();
+  };
 }
 
 function mayFailFunction() {
   if (Math.random() > 0.5) {
-      throw new Error("Помилка!");
+    throw new Error("Помилка!");
   }
   return "Успіх!";
 }
@@ -104,10 +107,9 @@ const safeFunction = retry(mayFailFunction, 3);
 
 try {
   const result = safeFunction();
-  console.log(result);                                 //Успіх!
+  console.log(result); //Успіх!
 } catch (e) {
-  console.error("Усі спроби помилки:", e.message);     // Усі спроби помилки: Помилка!
+  console.error("Усі спроби помилки:", e.message); // Усі спроби помилки: Помилка!
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
- 
